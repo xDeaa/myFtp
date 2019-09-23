@@ -1,0 +1,14 @@
+{
+  "name": "myftpclient",
+  "version": "1.0.0",
+  "description": "",
+  "main": "myFtpClient.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Andrea Serrano, Marc Didier",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^6.0.10"
+  }
+}
