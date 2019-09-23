@@ -1,0 +1,15 @@
+{
+    "name": "myFtpServer",
+    "version": "1.0.0",
+    "description": "Efrei's project",
+    "main": "myFtpServer.js",
+    "scripts": {
+      "start": "node myFtpServer.js"
+    },
+    "dependencies": {
+      "express": "^4.17.1"
+    },
+    "devDependencies": {
+    },
+    "license": "MIT"
+  }
