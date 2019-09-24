@@ -36,13 +36,13 @@ class FtpClient {
         });
         rl.on('line', (input) => {
             const [cmd, filename] = input.split(' ')
-            // const filepath = path.join(process.cwd(), filename)
             if (cmd.toUpperCase() === 'STOR') {
+                const filepath = path.join(process.cwd(), filename)
                 if (!fs.existsSync(filepath)) {
                     log("There is no file there", "red")
                     return
                 }
-
+                this.socket.write(input)
             } else {
                 this.socket.write(input)
                 rl.close();

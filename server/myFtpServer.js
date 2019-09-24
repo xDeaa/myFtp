@@ -19,11 +19,11 @@ class FtpServer extends Server {
       socket.setEncoding('ascii');
 
       //TODO del this debug object
-      // socket.session = {
-      //   username: "louis",
-      //   isConnected: true
-      // }
-      // this.checkDir(socket, "louis")
+      socket.session = {
+        username: "andrea",
+        isConnected: true
+      }
+      this.checkDir(socket, "andrea")
       //end to del
 
       socket.on('close', () => {
@@ -143,16 +143,20 @@ class FtpServer extends Server {
     }
   }
 
-  // stor(socket, filename) {
-  //   const tmp_port = 4545
-  //   let temp_server = super().create(tmp_port, (tmp_socket) => {
-  //     const writer = fs.createWriteStream(filename)
-  //     tmp_socket.on('data', (data) => {
-  //       //TODO finish this
-  //       writer.on('ready')
-  //     })
-  //   });
-  // }
+  stor(socket, filename) {
+    console.log('oo')
+    const tmp_port = 4545;
+    let temp_server = super.create(tmp_port, (tmp_socket) => {
+      const writer = fs.createWriteStream(filename);
+      tmp_socket.on('data', (data) => {
+        //TODO finish this
+        console.log('kk')
+        writer.on('ready', () => {
+          console.log('test')
+        });
+      })
+    });
+  }
 
   checkDir(socket, username) {
     const userDir = path.join(this.ROOT_FTP_DIRECTORY, username);
