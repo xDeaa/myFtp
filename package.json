@@ -6,7 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start:client": "nodemon client/myFtpClient.js --exec babel-node",
-        "start:server": "nodemon back/ftp.js --exec babel-node"
+        "start:server": "nodemon server/myFtpServer.js --exec babel-node"
     },
     "author": "",
     "license": "ISC",

@@ -36,7 +36,7 @@ class FtpClient {
         });
         rl.on('line', (input) => {
             const [cmd, filename] = input.split(' ')
-            const filepath = path.join(process.cwd(), filename)
+            // const filepath = path.join(process.cwd(), filename)
             if (cmd.toUpperCase() === 'STOR') {
                 if (!fs.existsSync(filepath)) {
                     log("There is no file there", "red")
