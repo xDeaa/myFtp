@@ -8,19 +8,8 @@
 - [Bonus](#bonus)
 - [Credits](#credits)
 
-## <a name='teams'>🙈 Teams</a>
-
-These are all randomize teams:
-
-- Louis + Yassine
-- Benjamin B + Gabriel
-- Ibrahima + Jean Charles
+## <a name='teams'>🙈 Team</a>
 - Marc + Andréa
-- Maxime + Charbel
-- Quentin + Steeve
-- Pierre + Dylan
-- Benjamin L + Adrien
-- Antoine + Thomas
 
 ## <a name='overview'>🦊 Rules</a>
 
@@ -78,16 +67,15 @@ You **CAN** use any protocol you want [ if interested, you can check and respect
 #### Commands
 
 The client must handle the following commands:
-
-- `USER <username>`: check if the user exist
-- `PASS <password>`: authenticate the user with a password
-- `LIST`: list the current directory of the server
-- `CWD <directory>`: change the current directory of the server
+- [X] `USER <username>`: check if the user exist
+- [X] `PASS <password>`: authenticate the user with a password
+- [X] `LIST`: list the current directory of the server
+- [X] `CWD <directory>`: change the current directory of the server
 - `RETR <filename>`: transfer a copy of the file _FILE_ from the server to the client
 - `STOR <filename>`: transfer a copy of the file _FILE_ from the client to the server
-- `PWD`: display the name of the current directory of the server
-- `HELP`: send helpful information to the client
-- `QUIT`: close the connection and stop the program
+- [X] `PWD`: display the name of the current directory of the server
+- [X] `HELP`: send helpful information to the client
+- [X] `QUIT`: close the connection and stop the program
 
 #### Requirements
 
