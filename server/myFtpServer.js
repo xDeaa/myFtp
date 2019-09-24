@@ -34,7 +34,6 @@ class FtpServer extends Server {
         //TODO create command directory and use index.js
         data = data.trim();
         let [cmd, ...args] = data.split(' ');
-        console.log(cmd, args)
         cmd = cmd.toLowerCase();
 
         if ((!socket.session || !socket.session.isConnected) && !isAllowedCommand(cmd)) {
@@ -75,20 +74,19 @@ class FtpServer extends Server {
   user(socket, username) {
     const user = dbUser.find(user => user.username === username);
     if (!user) {
-      socket.write("This login don't exist")
+      socket.write("This user don't exist")
     } else {
       socket.session = {
         username,
         isConnected: false
       }
       socket.write(`Username <${username}> ok -- need password`);
-
     }
   }
 
   pass(socket, password) {
     if (!socket.session) {
-      socket.write("enter user first");
+      socket.write("Enter user first");
       return
     }
     const user = dbUser.find(user => socket.session.username === user.username);
@@ -109,9 +107,8 @@ class FtpServer extends Server {
   list(socket) {
     let root_dir = socket.session.directory.split('/');
     root_dir.pop()
-    // console.log(root_dir)
     const user_current_dir = socket.session.pwd;
-    console.log(path.join(root_dir.join('/'), user_current_dir))
+
     exec(`ls -l ${path.join(root_dir.join('/'), user_current_dir)}`, (e, stdout, stderr) => {
       if (stdout == "") {
         socket.write("Nothing is in the directory")
