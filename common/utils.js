@@ -1,6 +1,5 @@
 import chalk from 'chalk'
 
-
 export function argv() {
     return process.argv.splice(2)
 }

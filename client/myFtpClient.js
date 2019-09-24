@@ -5,41 +5,40 @@ import fs from 'fs'
 import path from 'path'
 
 class FtpClient {
-    constructor(host, port){
+    constructor(host, port) {
         this.host = host;
         this.port = port;
     }
 
-    connect(){
+    connect() {
         this.socket = net.createConnection({
             port: this.port,
             host: this.host
         }, () => {
-            log('client connected', "cyan");
+            log('Client connected', "cyan");
             this.isReady = true
             this.prompt();
-
         })
         this.socket.on('data', (data) => {
             log(data.toString(), "yellow")
             this.prompt();
         })
         this.socket.on('end', () => {
-            log('client disconnected', 'cyan');
+            log('Client disconnected', 'cyan');
             process.exit(0)
         })
     }
 
-    prompt(){
+    prompt() {
         log(">>> ", "white", false);
         const rl = readlLine.createInterface({
             input: process.stdin
         });
         rl.on('line', (input) => {
-            const [ cmd, filename] = input.split(' ')
+            const [cmd, filename] = input.split(' ')
             const filepath = path.join(process.cwd(), filename)
-            if(cmd.toUpperCase() === 'STOR'){
-                if (!fs.existsSync(filepath)){
+            if (cmd.toUpperCase() === 'STOR') {
+                if (!fs.existsSync(filepath)) {
                     log("There is no file there", "red")
                     return
                 }
