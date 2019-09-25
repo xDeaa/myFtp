@@ -23,11 +23,8 @@ class FtpClient {
         })
         this.socket.on('data', (data) => {
             if (this.dataSocketOn) {
-                log('ok')
-                log(data, "red")
-                this.dataSend(4545, this.filePath);
+                this.dataSend(data.toString(), this.filePath);
             }
-            log(data.toString(), "yellow")
             this.prompt();
         })
         this.socket.on('end', () => {
@@ -66,23 +63,12 @@ class FtpClient {
         }, () => {
             log('Client connected to dataServer', "magenta");
             const rStream = fs.createReadStream(filepath);
-            let allData;
-            // rStream.on("readable", () => {
-            //     let data;
-            //     while (data = this.read()) {
-            //         this.dataSocket.write(data);
-            //     }
-            // })
 
             rStream.on('data', (data) => {
-                console.log(data)
-                let test =  rStream.open(data)
-                console.log(test)
+                this.dataSocket.write(data);
             })
 
             rStream.on('end', () => {
-                // rStream.close()
-                // this.dataSocket.write(allData)
                 this.dataSocket.end()
             })
         })
