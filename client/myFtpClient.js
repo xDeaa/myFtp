@@ -24,8 +24,12 @@ class FtpClient {
         this.socket.on('data', (data) => {
             if (this.dataSocketOn) {
                 this.dataSend(data.toString(), this.filePath);
+                this.dataSocketOn = false
+            } else {
+                log(data.toString(), "yellow")
+                this.prompt();
             }
-            this.prompt();
+            
         })
         this.socket.on('end', () => {
             log('Client disconnected', 'cyan');
@@ -61,7 +65,7 @@ class FtpClient {
             port: dataPort,
             host: this.host
         }, () => {
-            log('Client connected to dataServer', "magenta");
+            // log('Client connected to dataServer', "cyan");
             const rStream = fs.createReadStream(filepath);
 
             rStream.on('data', (data) => {
@@ -69,11 +73,12 @@ class FtpClient {
             })
 
             rStream.on('end', () => {
-                this.dataSocket.end()
+                // log('Client disconnected to dataServer', "cyan");
+                this.dataSocket.end();
             })
         })
-        this.dataSocket.on('error', () => {
-            console.log('on error')
+        this.dataSocket.on('error', (error) => {
+            log(error, 'red')
         })
     }
 }

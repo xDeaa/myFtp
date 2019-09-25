@@ -145,10 +145,45 @@ class FtpServer extends Server {
 
   stor(socket, filename) {
     const tmp_port = 4545;
-    const temp_socket = super.create(tmp_port, (tmp_socket) => {
+
+    let root_dir = socket.session.directory.split('/')
+    root_dir.pop()
+    const temp_dir = path.join(root_dir.join('/'), socket.session.pwd)
+      
+    super.create(tmp_port, (tmp_socket) => {
       log('dataSocket started', 'green')
-      const filePath = `./share${socket.session.pwd}/${filename}`
+      const filePath = `${temp_dir}/${filename}`
       const writer = fs.createWriteStream(filePath);
+      tmp_socket.on('data', (data) => {
+        log('I have the file', 'green')
+        writer.write(data);
+      })
+
+      tmp_socket.on("end", () => {
+        writer.end();
+        tmp_socket.end();
+      })
+
+      tmp_socket.on("error", () => {
+        log("error",'red');
+      })
+    });
+    socket.write(`${tmp_port}`);
+  }
+
+  retr(socket, filename) {
+    const tmp_port = 4545;
+    
+    let root_dir = socket.session.directory.split('/')
+    root_dir.pop()
+    const temp_dir = path.join(root_dir.join('/'), socket.session.pwd)
+      
+    super.create(tmp_port, (tmp_socket) => {
+      log('dataSocket started', 'green')
+      const filePath = `${temp_dir}/${filename}`
+      const writer = fs.createReadStream(filePath);
+      console.log(writer);
+      
       tmp_socket.on('data', (data) => {
         log('I have the file', 'green')
         writer.write(data);
