@@ -8,7 +8,7 @@ class FtpClient {
     constructor(host, port) {
         this.host = host;
         this.port = port;
-        this.dataSocketOn = false;
+        this.dataSocketOn = '';
         this.filePath = '';
     }
 
@@ -22,10 +22,14 @@ class FtpClient {
             this.prompt();
         })
         this.socket.on('data', (data) => {
-            if (this.dataSocketOn) {
+            if (this.dataSocketOn === "STOR") {
                 this.dataSend(data.toString(), this.filePath);
-                this.dataSocketOn = false
-            } else {
+                this.dataSocketOn = ''
+            } else if(this.dataSocketOn === "RETR") {
+                this.dataReceive(data.toString(), this.filePath);
+                this.dataSocketOn = ''
+            }
+            else {
                 log(data.toString(), "yellow")
                 this.prompt();
             }
@@ -51,7 +55,12 @@ class FtpClient {
                     return
                 }
                 this.filePath = filepath
-                this.dataSocketOn = true
+                this.dataSocketOn = 'STOR'
+                this.socket.write(input)
+            }else if (cmd.toUpperCase() === "RETR") {
+                const filepath = path.join(process.cwd(), filename)
+                this.filePath = filepath
+                this.dataSocketOn = 'RETR'
                 this.socket.write(input)
             } else {
                 this.socket.write(input)
@@ -65,7 +74,7 @@ class FtpClient {
             port: dataPort,
             host: this.host
         }, () => {
-            // log('Client connected to dataServer', "cyan");
+            log('Client connected to dataServer', "cyan");
             const rStream = fs.createReadStream(filepath);
 
             rStream.on('data', (data) => {
@@ -73,9 +82,34 @@ class FtpClient {
             })
 
             rStream.on('end', () => {
-                // log('Client disconnected to dataServer', "cyan");
+                log('Client disconnected to dataServer', "cyan");
                 this.dataSocket.end();
             })
+        })
+        this.dataSocket.on('error', (error) => {
+            log(error, 'red')
+        })
+    }
+
+    dataReceive (dataPort, filepath) {
+        this.dataSocket = net.createConnection({
+            port: dataPort,
+            host: this.host
+        }, () => {
+            log('Client connected to dataServer', "cyan");
+            const wStream = fs.createWriteStream(filepath);
+
+            this.dataSocket.on('data', (data) => {
+                wStream.write(data);
+                log("File received", "cyan")
+                this.dataSocket.end();
+            })
+
+            this.dataSocket.on('end', () => {
+                log('Client disconnected to dataServer', "cyan");
+                wStream.end();
+            })
+            
         })
         this.dataSocket.on('error', (error) => {
             log(error, 'red')

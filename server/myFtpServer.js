@@ -181,20 +181,19 @@ class FtpServer extends Server {
     super.create(tmp_port, (tmp_socket) => {
       log('dataSocket started', 'green')
       const filePath = `${temp_dir}/${filename}`
-      const writer = fs.createReadStream(filePath);
-      console.log(writer);
+      const rStream = fs.createReadStream(filePath);
       
-      tmp_socket.on('data', (data) => {
-        log('I have the file', 'green')
-        writer.write(data);
+      rStream.on('data', (data) => {
+        log('I send the file', 'green')
+        tmp_socket.write(data);
       })
 
-      tmp_socket.on("end", () => {
-        writer.end();
+      rStream.on("end", () => {
+        tmp_socket.end();
       })
 
-      tmp_socket.on("error", () => {
-        log("error",'red');
+      rStream.on("error", (error) => {
+        log(error,'red');
       })
     });
     socket.write(`${tmp_port}`);
