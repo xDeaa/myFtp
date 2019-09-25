@@ -39,6 +39,11 @@ class FtpClient {
             log('Client disconnected', 'cyan');
             process.exit(0)
         })
+
+        this.socket.on('error', (e => {
+            log(e,'red');
+            process.exit(0)
+        }))
     }
 
     prompt() {
