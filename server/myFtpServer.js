@@ -18,20 +18,11 @@ class FtpServer extends Server {
       log("Socket connected", "cyan");
       socket.setEncoding('ascii');
 
-      //TODO del this debug object
-      socket.session = {
-        username: "andrea",
-        isConnected: true
-      }
-      this.checkDir(socket, "andrea")
-      //end to del
-
       socket.on('close', () => {
         log("Socket disconnected", "red");
       })
 
       socket.on('data', (data) => {
-        //TODO create command directory and use index.js
         data = data.trim();
         let [cmd, ...args] = data.split(' ');
         cmd = cmd.toLowerCase();
@@ -44,9 +35,7 @@ class FtpServer extends Server {
           socket.write(`This command is not implemented: <${cmd}>`);
           return
         }
-
         this[cmd](socket, ...args)
-
       })
     });
   }
@@ -149,7 +138,7 @@ class FtpServer extends Server {
     let root_dir = socket.session.directory.split('/')
     root_dir.pop()
     const temp_dir = path.join(root_dir.join('/'), socket.session.pwd)
-      
+
     super.create(tmp_port, (tmp_socket) => {
       log('dataSocket started', 'green')
       const filePath = `${temp_dir}/${filename}`
@@ -165,7 +154,7 @@ class FtpServer extends Server {
       })
 
       tmp_socket.on("error", () => {
-        log("error",'red');
+        log("error", 'red');
       })
     });
     socket.write(`${tmp_port}`);
@@ -173,16 +162,16 @@ class FtpServer extends Server {
 
   retr(socket, filename) {
     const tmp_port = 4545;
-    
+
     let root_dir = socket.session.directory.split('/')
     root_dir.pop()
     const temp_dir = path.join(root_dir.join('/'), socket.session.pwd)
-      
+
     super.create(tmp_port, (tmp_socket) => {
       log('dataSocket started', 'green')
       const filePath = `${temp_dir}/${filename}`
       const rStream = fs.createReadStream(filePath);
-      
+
       rStream.on('data', (data) => {
         log('I send the file', 'green')
         tmp_socket.write(data);
@@ -193,7 +182,7 @@ class FtpServer extends Server {
       })
 
       rStream.on("error", (error) => {
-        log(error,'red');
+        log(error, 'red');
       })
     });
     socket.write(`${tmp_port}`);

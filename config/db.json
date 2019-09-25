@@ -4,11 +4,7 @@
       "password": "anonymous"
     },
     {
-     "username": "andrea",
-     "password": "andrea"
-    },
-    {
-     "username": "marc",
-     "password": "marc"
+     "username": "admin",
+     "password": "root"
     }
   ]
