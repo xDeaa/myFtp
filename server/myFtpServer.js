@@ -15,7 +15,7 @@ class FtpServer extends Server {
 
   start() {
     super.create(this.port, (socket) => {
-      log("Socket connected", "green");
+      log("Socket connected", "cyan");
       socket.setEncoding('ascii');
 
       //TODO del this debug object
@@ -144,18 +144,28 @@ class FtpServer extends Server {
   }
 
   stor(socket, filename) {
-    console.log('oo')
     const tmp_port = 4545;
-    let temp_server = super.create(tmp_port, (tmp_socket) => {
-      const writer = fs.createWriteStream(filename);
+    const temp_socket = super.create(tmp_port, (tmp_socket) => {
+      console.log('dataSocket started')
+      const filePath = `./share${socket.session.pwd}/${filename}`
+      const writer = fs.createWriteStream(filePath);
       tmp_socket.on('data', (data) => {
         //TODO finish this
-        console.log('kk')
-        writer.on('ready', () => {
-          console.log('test')
+        console.log(data)
+        console.log('i got datas')
+        writer.on('readable', () => {
+          console.log()
         });
+        writer.on('end', () => {
+          tmp_socket.close()
+        })
+      })
+
+      tmp_socket.on("error", () => {
+        console.log("error")
       })
     });
+    socket.write(`${tmp_port}`);
   }
 
   checkDir(socket, username) {

@@ -8,6 +8,8 @@ class FtpClient {
     constructor(host, port) {
         this.host = host;
         this.port = port;
+        this.dataSocketOn = false;
+        this.filePath = '';
     }
 
     connect() {
@@ -20,6 +22,11 @@ class FtpClient {
             this.prompt();
         })
         this.socket.on('data', (data) => {
+            if (this.dataSocketOn) {
+                log('ok')
+                log(data, "red")
+                this.dataSend(4545, this.filePath);
+            }
             log(data.toString(), "yellow")
             this.prompt();
         })
@@ -42,12 +49,46 @@ class FtpClient {
                     log("There is no file there", "red")
                     return
                 }
+                this.filePath = filepath
+                this.dataSocketOn = true
                 this.socket.write(input)
             } else {
                 this.socket.write(input)
                 rl.close();
             }
         });
+    }
+
+    dataSend (dataPort, filepath) {
+        this.dataSocket = net.createConnection({
+            port: dataPort,
+            host: this.host
+        }, () => {
+            log('Client connected to dataServer', "magenta");
+            const rStream = fs.createReadStream(filepath);
+            let allData;
+            // rStream.on("readable", () => {
+            //     let data;
+            //     while (data = this.read()) {
+            //         this.dataSocket.write(data);
+            //     }
+            // })
+
+            rStream.on('data', (data) => {
+                console.log(data)
+                let test =  rStream.open(data)
+                console.log(test)
+            })
+
+            rStream.on('end', () => {
+                // rStream.close()
+                // this.dataSocket.write(allData)
+                this.dataSocket.end()
+            })
+        })
+        this.dataSocket.on('error', () => {
+            console.log('on error')
+        })
     }
 }
 
